@@ -1,10 +1,8 @@
 package ru.daniil.split;
 
-import org.w3c.dom.ls.LSOutput;
-import ru.daniil.split.config.AppService;
-import ru.daniil.split.exceptions.NonValidNameException;
-import ru.daniil.split.exceptions.PersonIsExistException;
-import ru.daniil.split.exceptions.NegativeSpendException;
+import ru.daniil.split.service.PersonService;
+import ru.daniil.split.exceptions.NonValidArgumentException;
+import ru.daniil.split.exceptions.DoubleEntryException;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -14,7 +12,7 @@ import java.util.Set;
 public final class SawApp {
 
     private final Scanner input = new Scanner(System.in);
-    private final AppService appService = new AppService();
+    private final PersonService personService = new PersonService();
 
     public static void main(String[] args) {
         SawApp app = new SawApp();
@@ -55,13 +53,12 @@ public final class SawApp {
         System.out.println("Enter the name of the new participant:");
         String personName = getNextString();
         try {
-            appService.addNewPerson(personName);
-        } catch (PersonIsExistException e) {
+            personService.addNewPerson(personName);
+        } catch (DoubleEntryException e) {
             System.out.println("A person " + personName + " is exist.");
-        } catch (NonValidNameException e) {
-            System.out.println("The username entered is incorrect. " +
-                    "    * It must be between 4 and 15 characters long" +
-                    "    * Must be one word");
+        } catch (NonValidArgumentException e) {
+            System.out.println("The username entered is incorrect. \n" +
+                    "    * " + e.getMessage());
         }
     }
 
@@ -76,14 +73,14 @@ public final class SawApp {
             return;
         }
         try {
-            appService.addSpend(newSpend);
-        } catch (NegativeSpendException e) {
-            System.out.println("Can't add negative number");
+            personService.addSpend(newSpend);
+        } catch (NonValidArgumentException e) {
+            System.out.println("Negative cannot be negative");
         }
     }
 
     public void showAllPersons() {
-        Set<String> allPersons = appService.getAllPerson();
+        Set<String> allPersons = personService.getAllPerson();
 
         if (allPersons.isEmpty()) {
             System.out.println("No registered persons");
@@ -98,7 +95,7 @@ public final class SawApp {
     }
 
     public void showAllSpends() {
-        int allSpends = appService.getAllSpends();
+        int allSpends = personService.getAllSpends();
 
         if (allSpends == 0) {
             System.out.println("No expenses");
@@ -108,17 +105,17 @@ public final class SawApp {
     }
 
     public void displayEachPersonsShare() {
-        BigDecimal result = appService.divideAmongEveryone();
+        BigDecimal result = personService.divideAmongEveryone();
         if (result.equals(new BigDecimal(0))) {
             System.out.println("No expenses");
             return;
         }
-        int quantityPerson = appService.getAllPerson().size();
+        int quantityPerson = personService.getAllPerson().size();
         if (quantityPerson == 0) {
             System.out.println("No users need to pay for the account");
             return;
         }
-        System.out.println("Each person's share: " + appService.divideAmongEveryone());
+        System.out.println("Each person's share: " + personService.divideAmongEveryone());
     }
 
     public void exit() {
