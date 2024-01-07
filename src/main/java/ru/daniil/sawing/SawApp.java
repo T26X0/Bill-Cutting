@@ -1,5 +1,6 @@
 package ru.daniil.sawing;
 
+import javax.sound.midi.Soundbank;
 import java.util.*;
 
 public class SawApp {
@@ -13,57 +14,64 @@ public class SawApp {
 
     public static void main(String[] args) {
         final Scanner input = new Scanner(System.in);
-        String answer;
         SawApp sawApp = new SawApp();
 
-        while (true) {
-            System.out.println("All options:");
-            System.out.println("  1. Add new person");
-            System.out.println("  2. Add new general spend");
-            System.out.println("  3. Add new spend for person");
-            System.out.println("  4. What everyone has to pay");
-            System.out.println("  5. Show all persons");
-            System.out.println("  6. Show all expenses");
-            System.out.println("  7. Show all expenses for person");
+        String answer;
+        String personName;
+        int newSpend;
 
-            answer = input.nextLine();
+        while (true) {
+            System.out.println("____________________________________________________________________");
+            System.out.println("                           All options:");
+            System.out.println("  1. Add new person              |   4. Show all persons");
+            System.out.println("  2. Add new general spend       |   5. Show all expenses");
+            System.out.println("  3. Add new spend for person    |   6. Show all expenses for person");
+            System.out.println("                  7. What everyone has to pay");
+
+            answer = input.nextLine().trim();
             switch (answer) {
                 case "1" -> {
                     System.out.println("Enter the name of the new participant:");
-                    sawApp.addNewPerson(input.nextLine());
+                    personName = input.nextLine().trim();
+                    try {
+                        sawApp.addNewPerson(personName);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("This user already exists");
+                    }
                 }
                 case "2" -> {
                     System.out.println("Enter new spend");
-                    sawApp.addGeneralSpend(Integer.parseInt(input.nextLine()));
+                    newSpend = Integer.parseInt(input.nextLine());
+                    sawApp.addGeneralSpend(newSpend);
                 }
                 case "3" -> {
-                    String personName;
                     System.out.println("Enter the person name:");
-                    personName = input.nextLine();
+                    personName = input.nextLine().trim();
+
                     if (sawApp.personIsExist(personName)) {
                         System.out.println("Enter new spend:");
-                        int newSpend = Integer.parseInt(input.nextLine());
+                        newSpend = Integer.parseInt(input.nextLine().trim());
                         sawApp.addSpend(personName, newSpend);
                         break;
                     }
                     System.out.println("This user has not been added to the general account");
                     System.out.println("Add? (y\\n)");
                     if (input.nextLine().equals("y")) {
-                        sawApp.addNewPerson(personName);
+                        try {
+                            sawApp.addNewPerson(personName);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("This user already exists");
+                        }
                     }
                 }
-                case "4" -> {
-
-                }
-                case "5" -> {
-
-                }
+                case "4" -> sawApp.showAllPerson();
+                case "5" -> sawApp.showAllExpenses();
                 case "6" -> {
-
+                    System.out.println("Enter person name:");
+                    personName = input.nextLine().trim();
+                    sawApp.showExpensesFor(personName);
                 }
-                case "7" -> {
-
-                }
+                case "7" -> System.out.println(sawApp.divideAmongEveryone());
                 default -> System.out.println("You made a mistake when entering data");
             }
         }
@@ -85,6 +93,15 @@ public class SawApp {
         List<String> allPersons = new ArrayList<>(allPersonAndTheirSpend.keySet());
         allPersons.remove(GENERAL_PERSON);
         System.out.println(allPersons);
+    }
+
+    public void showAllExpenses() {
+        showExpensesFor(GENERAL_PERSON);
+    }
+
+    public void showExpensesFor(String personName) {
+        List<Integer> allSpends = new ArrayList<>(allPersonAndTheirSpend.get(personName));
+        System.out.println(allSpends);
     }
 
     public void addGeneralSpend(int newSpend) {
