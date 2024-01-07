@@ -1,49 +1,59 @@
 package ru.daniil.sawing;
 
-import java.io.StringBufferInputStream;
 import java.util.*;
 
 public class SawApp {
 
     final Scanner input = new Scanner(System.in);
-    private Map<String, Integer> allPersonAndTheirSpend = new HashMap<>();
+    private Map<String, List<Integer>> allPersonAndTheirSpend = new HashMap<>();
     private final String GENERAL_PERSON = "generalSpend";
-    private int allSpends = 0;
 
     public SawApp() {
-        allPersonAndTheirSpend.put(GENERAL_PERSON, allSpends);
+        allPersonAndTheirSpend.put(GENERAL_PERSON, new ArrayList<>());
+    }
+
+    public static void main(String[] args) {
+        SawApp sawApp = new SawApp();
+        sawApp.addNewPerson("Daniil");
+        sawApp.addNewPerson("Nikita");
+        sawApp.addGeneralSpend(100);
+        sawApp.addSpend("Daniil", 100);
+        System.out.println(sawApp.getAllPerson());
+        System.out.println(sawApp.divideAmongEveryone());
     }
 
     public void addNewPerson(String personName) {
         if (allPersonAndTheirSpend.containsKey(personName)) {
             throw new IllegalArgumentException("Person + {" + personName + "} already exist");
         }
-        allPersonAndTheirSpend.put(personName, 0);
+        allPersonAndTheirSpend.put(personName, new ArrayList<>());
     }
 
     public List<String> getAllPerson() {
-        List<String> allUsers = new ArrayList<>(allPersonAndTheirSpend.keySet());
-        return allUsers;
+        List<String> allPersons = new ArrayList<>(allPersonAndTheirSpend.keySet());
+        allPersons.remove(GENERAL_PERSON);
+        return allPersons;
     }
 
-    public void addSpend(int newSpend) {
-        addSpend(GENERAL_PERSON, newSpend);
+    public void addGeneralSpend(int newSpend) {
+        allPersonAndTheirSpend.get(GENERAL_PERSON).add(newSpend);
     }
 
     public void addSpend(String personName, int newSpend) {
         if (newSpend <= 0) {
             throw new IllegalArgumentException("Spending can't be negative");
         }
-
-        allSpends += newSpend;
-
-        int oldSpend = allPersonAndTheirSpend.get(personName);
-        oldSpend += newSpend;
-        allPersonAndTheirSpend.put(personName, oldSpend);
+        allPersonAndTheirSpend.get(personName).add(newSpend);
+        addGeneralSpend(newSpend);
     }
 
     public double divideAmongEveryone() {
-        return (double) allSpends / (allPersonAndTheirSpend.size() - 1);
+        int sumAllSpends = 0;
+        List<Integer> allSpends = new ArrayList<>(allPersonAndTheirSpend.get(GENERAL_PERSON));
+        for (Integer integer : allSpends) {
+            sumAllSpends += integer;
+        }
+        return (double) sumAllSpends / (allPersonAndTheirSpend.size() - 1);
     }
 }
 
@@ -93,7 +103,7 @@ class Tests {
 
         sawApp.addSpend("Nikita", 100);
         sawApp.addSpend("Daniil", 100);
-        sawApp.addSpend(100);
+        sawApp.addGeneralSpend(100);
         int expectedResult = 100;
         assert sawApp.divideAmongEveryone() == expectedResult;
     }
