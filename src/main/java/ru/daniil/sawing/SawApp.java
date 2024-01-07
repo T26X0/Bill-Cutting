@@ -47,7 +47,7 @@ public class SawApp {
                         break;
                     }
                     System.out.println("This user has not been added to the general account");
-                    System.out.println("Add? (\\n)");
+                    System.out.println("Add? (y\\n)");
                     if (input.nextLine().equals("y")) {
                         sawApp.addNewPerson(personName);
                     }
