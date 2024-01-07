@@ -37,7 +37,20 @@ public class SawApp {
                     sawApp.addGeneralSpend(Integer.parseInt(input.nextLine()));
                 }
                 case "3" -> {
-
+                    String personName;
+                    System.out.println("Enter the person name:");
+                    personName = input.nextLine();
+                    if (sawApp.personIsExist(personName)) {
+                        System.out.println("Enter new spend:");
+                        int newSpend = Integer.parseInt(input.nextLine());
+                        sawApp.addSpend(personName, newSpend);
+                        break;
+                    }
+                    System.out.println("This user has not been added to the general account");
+                    System.out.println("Add? (\\n)");
+                    if (input.nextLine().equals("y")) {
+                        sawApp.addNewPerson(personName);
+                    }
                 }
                 case "4" -> {
 
@@ -61,6 +74,11 @@ public class SawApp {
             throw new IllegalArgumentException("Person + {" + personName + "} already exist");
         }
         allPersonAndTheirSpend.put(personName, new ArrayList<>());
+    }
+
+    public boolean personIsExist(String personName) {
+        List<String> allPersons = new ArrayList<>(allPersonAndTheirSpend.keySet());
+        return allPersons.contains(personName);
     }
 
     public void showAllPerson() {
