@@ -1,6 +1,5 @@
 package ru.daniil.sawing;
 
-import javax.sound.midi.Soundbank;
 import java.util.*;
 
 public class SawApp {
@@ -10,6 +9,14 @@ public class SawApp {
 
     public SawApp() {
         allPersonAndTheirSpend.put(GENERAL_PERSON, new ArrayList<>());
+    }
+
+    public SawApp(String ... startingPerson) {
+        allPersonAndTheirSpend.put(GENERAL_PERSON, new ArrayList<>());
+
+        for (String personName : startingPerson) {
+            addNewPerson(personName);
+        }
     }
 
     public static void main(String[] args) {
@@ -64,12 +71,12 @@ public class SawApp {
                         }
                     }
                 }
-                case "4" -> sawApp.showAllPerson();
-                case "5" -> sawApp.showAllExpenses();
+                case "4" -> System.out.println(sawApp.getAllPerson());
+                case "5" -> System.out.println(sawApp.getAllSpends());
                 case "6" -> {
                     System.out.println("Enter person name:");
                     personName = input.nextLine().trim();
-                    sawApp.showExpensesFor(personName);
+                    System.out.println(sawApp.getAllSpendsFor(personName));
                 }
                 case "7" -> System.out.println(sawApp.divideAmongEveryone());
                 default -> System.out.println("You made a mistake when entering data");
@@ -89,19 +96,19 @@ public class SawApp {
         return allPersons.contains(personName);
     }
 
-    public void showAllPerson() {
+    public List<String> getAllPerson() {
         List<String> allPersons = new ArrayList<>(allPersonAndTheirSpend.keySet());
         allPersons.remove(GENERAL_PERSON);
-        System.out.println(allPersons);
+        return allPersons;
     }
 
-    public void showAllExpenses() {
-        showExpensesFor(GENERAL_PERSON);
+    public List<Integer> getAllSpends() {
+        return getAllSpendsFor(GENERAL_PERSON);
     }
 
-    public void showExpensesFor(String personName) {
+    public List<Integer> getAllSpendsFor(String personName) {
         List<Integer> allSpends = new ArrayList<>(allPersonAndTheirSpend.get(personName));
-        System.out.println(allSpends);
+        return allSpends;
     }
 
     public void addGeneralSpend(int newSpend) {
@@ -110,6 +117,9 @@ public class SawApp {
     }
 
     public void addSpend(String personName, int newSpend) {
+        if (!allPersonAndTheirSpend.containsKey(personName)) {
+            throw new IllegalArgumentException("Person {" + personName + "} does non exist");
+        }
         isValidSpend(newSpend);
         allPersonAndTheirSpend.get(personName).add(newSpend);
         addGeneralSpend(newSpend);
