@@ -1,6 +1,6 @@
 package ru.daniil.sawing;
 
-public interface SawApplication {
+public interface BillCurringApplication {
 
     void runApp();
 
