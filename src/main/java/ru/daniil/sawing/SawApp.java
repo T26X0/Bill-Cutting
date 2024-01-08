@@ -1,6 +1,7 @@
 package ru.daniil.sawing;
 
-import ru.daniil.sawing.config.SawAppService;
+import ru.daniil.sawing.config.AppService;
+import ru.daniil.sawing.myExceptions.PersonIsExistException;
 
 import java.util.Scanner;
 
@@ -8,7 +9,7 @@ import java.util.Scanner;
 public final class SawApp {
 
     private static final Scanner input = new Scanner(System.in);
-    private final SawAppService appConfig = new SawAppService();
+    private final AppService appService = new AppService();
     private String personName;
     private int newSpend;
 
@@ -26,94 +27,46 @@ public final class SawApp {
 
             answer = getNextString();
             switch (answer) {
-                case "1" -> actionsToAddNewPerson();
-                case "2" -> actionsToAddNewGeneralSpend();
-                case "3" -> actionsToAddNewSpendForPerson();
-                case "4" -> actionsToShowAllPersons();
-                case "5" -> actionsToShowAllSpends();
-                case "6" -> actionsToShowAllPersonSpends();
-                case "7" -> actionsToDisplayEachPersonsShare();
-                case "8" -> actionsToExit();
+                case "1" -> addNewPerson();
+                case "2" -> addNewSpend();
+                case "3" -> displayEachPersonsShare();
+                case "4" -> actionsToExit();
                 default -> System.out.println("You made a mistake when entering data");
             }
         }
     }
 
     public void showAppMenu() {
-        System.out.println("____________________________________________________________________");
-        System.out.println("                           All options:");
-        System.out.println("  1. Add new person              |   4. Show all persons");
-        System.out.println("  2. Add new general spend       |   5. Show all spends");
-        System.out.println("  3. Add new spend for person    |   6. Show all spends for person");
-        System.out.println("                  7. What everyone has to pay");
-        System.out.println("                            8. Exit");
+        System.out.println("________________________________");
+        System.out.println("All options:");
+        System.out.println("  1. Add new person");
+        System.out.println("  2. Add new spend");
+        System.out.println("  3. What everyone has to pay");
+        System.out.println("  4. Exit");
     }
 
-    public void actionsToAddNewPerson() {
+    public void addNewPerson() {
         System.out.println("Enter the name of the new participant:");
         personName = getNextString();
         try {
-            appConfig.addNewPerson(personName);
-        } catch (IllegalArgumentException e) {
+            appService.addNewPerson(personName);
+        } catch (PersonIsExistException e) {
             System.out.println("This user already exists");
         }
     }
 
-    public void actionsToAddNewGeneralSpend() {
+    public void addNewSpend() {
         System.out.println("Enter new spend");
-        newSpend = getNextInteger();
-        appConfig.addGeneralSpend(newSpend);
-    }
-
-    public void actionsToAddNewSpendForPerson() {
-        System.out.println("Enter the person name:");
-        personName = getNextString();
-
-        if (appConfig.personIsExist(personName)) {
-            System.out.println("Enter new spend:");
+        try {
             newSpend = getNextInteger();
-            appConfig.addSpend(personName, newSpend);
-        } else {
-            System.out.println("This user has not been added to the general account");
-            System.out.println("Add? (y\\n)");
-            if (getNextString().equals("y")) {
-                try {
-                    appConfig.addNewPerson(personName);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("This user already exists");
-                }
-            }
+            appService.addSpend(newSpend);
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public void actionsToShowAllPersons() {
-        System.out.println(appConfig.getAllPerson());
-    }
-
-    public void actionsToShowAllSpends() {
-        System.out.println(appConfig.getAllSpends());
-    }
-
-    public void actionsToShowAllPersonSpends() {
-        System.out.println("Enter person name:");
-        personName = getNextString();
-
-        if (!appConfig.personIsExist(personName)) {
-            System.out.println("This user has not been added to the general account");
-            System.out.println("Add? (y\\n)");
-            if (getNextString().equals("y")) {
-                try {
-                    appConfig.addNewPerson(personName);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("This user already exists");
-                }
-            }
-        }
-        System.out.println(appConfig.getAllSpendsFor(personName));
-    }
-
-    public void actionsToDisplayEachPersonsShare() {
-        System.out.println(appConfig.divideAmongEveryone());
+    public void displayEachPersonsShare() {
+        System.out.println(appService.divideAmongEveryone());
     }
 
     public void actionsToExit() {
@@ -124,7 +77,11 @@ public final class SawApp {
         return input.nextLine().trim();
     }
 
-    private int getNextInteger() {
-        return Integer.parseInt(input.nextLine().trim());
+    private int getNextInteger() throws NumberFormatException {
+        try {
+            return Integer.parseInt(input.nextLine().trim());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("The application only considers integer values");
+        }
     }
 }
