@@ -2,12 +2,13 @@ package ru.daniil.sawing;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.daniil.sawing.config.SawAppConfig;
 
 class SawAppTest {
 
     @Test
     void addNewPerson() {
-        SawApp sawApp = new SawApp();
+        SawAppConfig sawApp = new SawAppConfig();
         sawApp.addNewPerson("Daniil");
         Assertions.assertEquals(
                 "Daniil",
@@ -16,14 +17,14 @@ class SawAppTest {
 
     @Test
     void  personIsExist() {
-        SawApp sawApp = new SawApp();
+        SawAppConfig sawApp = new SawAppConfig();
         sawApp.addNewPerson("Lerya");
         Assertions.assertTrue(sawApp.personIsExist("Lerya"));
     }
 
     @Test
     void getAllPerson() {
-        SawApp sawApp = new SawApp();
+        SawAppConfig sawApp = new SawAppConfig();
         sawApp.addNewPerson("Nikita");
         sawApp.addNewPerson("Maxim");
         sawApp.addNewPerson("Igor");
@@ -33,7 +34,7 @@ class SawAppTest {
 
     @Test
     void checkAllPersons() {
-        SawApp sawApp = new SawApp("Daniil", "Igor");
+        SawAppConfig sawApp = new SawAppConfig("Daniil", "Igor");
         Assertions.assertTrue(sawApp.personIsExist("Daniil"));
         Assertions.assertTrue(sawApp.personIsExist("Igor"));
         Assertions.assertEquals(2, sawApp.getAllPerson().size());
@@ -41,7 +42,7 @@ class SawAppTest {
 
     @Test
     void getAllSpends() {
-        SawApp sawApp = new SawApp("Daniil");
+        SawAppConfig sawApp = new SawAppConfig("Daniil");
         sawApp.addGeneralSpend(299);
         sawApp.addGeneralSpend(199);
         Assertions.assertEquals(2, sawApp.getAllSpends().size());
@@ -49,7 +50,7 @@ class SawAppTest {
 
     @Test
     void getAllSpendsFor() {
-        SawApp sawApp = new SawApp("Daniil");
+        SawAppConfig sawApp = new SawAppConfig("Daniil");
         sawApp.addSpend("Daniil", 299);
         sawApp.addSpend("Daniil", 199);
         Assertions.assertEquals(2, sawApp.getAllSpendsFor("Daniil").size());
@@ -57,7 +58,7 @@ class SawAppTest {
 
     @Test
     void divideAmongEveryone() {
-        SawApp sawApp = new SawApp("Daniil");
+        SawAppConfig sawApp = new SawAppConfig("Daniil");
         sawApp.addNewPerson("Kostya");
         sawApp.addSpend("Daniil", 100);
         sawApp.addSpend("Kostya", 100);
@@ -67,7 +68,7 @@ class SawAppTest {
 
     @Test
     void personNonExist() {
-        SawApp sawApp = new SawApp("Daniil");
+        SawAppConfig sawApp = new SawAppConfig("Daniil");
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             sawApp.addSpend("Nikita", 100);
         });
@@ -75,7 +76,7 @@ class SawAppTest {
 
     @Test
     void isNonValidValueForSpend() {
-        SawApp sawApp = new SawApp("Daniil");
+        SawAppConfig sawApp = new SawAppConfig("Daniil");
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             sawApp.addGeneralSpend(-100);
         });
@@ -83,7 +84,7 @@ class SawAppTest {
 
     @Test
     void thisPersonAlreadyExist() {
-        SawApp sawApp = new SawApp("Daniil");
+        SawAppConfig sawApp = new SawAppConfig("Daniil");
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             sawApp.addNewPerson("Daniil");
         });
