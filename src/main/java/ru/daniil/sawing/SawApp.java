@@ -5,7 +5,7 @@ import ru.daniil.sawing.config.SawAppConfig;
 import java.util.Scanner;
 
 
-public final class SawApp implements BillCurringApplication {
+public final class SawApp implements BillCuttingApplication {
 
     private static final Scanner input = new Scanner(System.in);
     private final SawAppConfig appConfig = new SawAppConfig();
