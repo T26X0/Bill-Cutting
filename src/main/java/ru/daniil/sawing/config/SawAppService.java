@@ -2,16 +2,16 @@ package ru.daniil.sawing.config;
 
 import java.util.*;
 
-public class SawAppConfig {
+public class SawAppService {
 
     private Map<String, List<Integer>> allPersonAndTheirSpend = new HashMap<>();
     private final String GENERAL_PERSON = "generalSpend";
 
-    public SawAppConfig() {
+    public SawAppService() {
         allPersonAndTheirSpend.put(GENERAL_PERSON, new ArrayList<>());
     }
 
-    public SawAppConfig(String ... startingPerson) {
+    public SawAppService(String ... startingPerson) {
         allPersonAndTheirSpend.put(GENERAL_PERSON, new ArrayList<>());
 
         for (String personName : startingPerson) {

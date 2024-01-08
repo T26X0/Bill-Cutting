@@ -1,14 +1,14 @@
 package ru.daniil.sawing;
 
-import ru.daniil.sawing.config.SawAppConfig;
+import ru.daniil.sawing.config.SawAppService;
 
 import java.util.Scanner;
 
 
-public final class SawApp implements BillCuttingApplication {
+public final class SawApp {
 
     private static final Scanner input = new Scanner(System.in);
-    private final SawAppConfig appConfig = new SawAppConfig();
+    private final SawAppService appConfig = new SawAppService();
     private String personName;
     private int newSpend;
 
@@ -17,7 +17,6 @@ public final class SawApp implements BillCuttingApplication {
         app.runApp();
     }
 
-    @Override
     public void runApp() {
 
         while (true) {
@@ -40,7 +39,6 @@ public final class SawApp implements BillCuttingApplication {
         }
     }
 
-    @Override
     public void showAppMenu() {
         System.out.println("____________________________________________________________________");
         System.out.println("                           All options:");
@@ -51,7 +49,6 @@ public final class SawApp implements BillCuttingApplication {
         System.out.println("                            8. Exit");
     }
 
-    @Override
     public void actionsToAddNewPerson() {
         System.out.println("Enter the name of the new participant:");
         personName = getNextString();
@@ -62,14 +59,12 @@ public final class SawApp implements BillCuttingApplication {
         }
     }
 
-    @Override
     public void actionsToAddNewGeneralSpend() {
         System.out.println("Enter new spend");
         newSpend = getNextInteger();
         appConfig.addGeneralSpend(newSpend);
     }
 
-    @Override
     public void actionsToAddNewSpendForPerson() {
         System.out.println("Enter the person name:");
         personName = getNextString();
@@ -91,17 +86,14 @@ public final class SawApp implements BillCuttingApplication {
         }
     }
 
-    @Override
     public void actionsToShowAllPersons() {
         System.out.println(appConfig.getAllPerson());
     }
 
-    @Override
     public void actionsToShowAllSpends() {
         System.out.println(appConfig.getAllSpends());
     }
 
-    @Override
     public void actionsToShowAllPersonSpends() {
         System.out.println("Enter person name:");
         personName = getNextString();
@@ -120,12 +112,10 @@ public final class SawApp implements BillCuttingApplication {
         System.out.println(appConfig.getAllSpendsFor(personName));
     }
 
-    @Override
     public void actionsToDisplayEachPersonsShare() {
         System.out.println(appConfig.divideAmongEveryone());
     }
 
-    @Override
     public void actionsToExit() {
         System.exit(0);
     }
