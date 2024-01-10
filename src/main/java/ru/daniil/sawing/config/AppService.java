@@ -58,15 +58,3 @@ public class AppService {
         }
     }
 }
-
-
-class Test {
-    public static void main(String[] args) {
-        AppService appService = new AppService();
-
-        boolean firstAnswer = appService.getAllPerson().contains("Daniil");
-        appService.addNewPerson("Daniil");
-        boolean secondAnswer = appService.getAllPerson().contains("Daniil");
-        System.out.println(firstAnswer + " " + secondAnswer);
-    }
-}
