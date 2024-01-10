@@ -22,13 +22,17 @@ public class AppService {
         allPersons.add(personName);
     }
 
+    public void addSpend(int newSpend) throws ZeroSpendsException {
+        isValidSpend(newSpend);
+        allSpends += newSpend;
+    }
+
     public Set<String> getAllPerson() {
         return new HashSet<>(allPersons);
     }
 
-    public void addSpend(int newSpend) throws ZeroSpendsException {
-        isValidSpend(newSpend);
-        allSpends += newSpend;
+    public int getAllSpends() {
+        return allSpends;
     }
 
     public BigDecimal divideAmongEveryone() {
@@ -52,5 +56,17 @@ public class AppService {
         if (wordCount > 1) {
             throw new NonValidNameException("The person name can only consist of one word");
         }
+    }
+}
+
+
+class Test {
+    public static void main(String[] args) {
+        AppService appService = new AppService();
+
+        boolean firstAnswer = appService.getAllPerson().contains("Daniil");
+        appService.addNewPerson("Daniil");
+        boolean secondAnswer = appService.getAllPerson().contains("Daniil");
+        System.out.println(firstAnswer + " " + secondAnswer);
     }
 }

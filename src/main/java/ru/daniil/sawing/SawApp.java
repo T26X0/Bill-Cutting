@@ -31,11 +31,12 @@ public final class SawApp {
 
             answer = getNextString();
             switch (answer) {
-                case "1" -> showAllPersons();
-                case "2" -> addNewPerson();
-                case "3" -> addNewSpend();
-                case "4" -> displayEachPersonsShare();
-                case "5" -> actionsToExit();
+                case "1" -> addNewPerson();
+                case "2" -> addNewSpend();
+                case "3" -> showAllPersons();
+                case "4" -> showAllSpends();
+                case "5" -> displayEachPersonsShare();
+                case "6" -> exit();
                 default -> System.out.println("You made a mistake when entering data");
             }
         }
@@ -43,28 +44,12 @@ public final class SawApp {
 
     public void showAppMenu() {
         System.out.println();
-        System.out.println("________________________________");
-        System.out.println("All options:");
-        System.out.println("  1. Show all persons");
-        System.out.println("  2. Add new person");
-        System.out.println("  3. Add new spend");
-        System.out.println("  4. What everyone has to pay");
-        System.out.println("  5. Exit");
-    }
-
-    public void showAllPersons() {
-        Set<String> allPersons = appService.getAllPerson();
-
-        if (!allPersons.isEmpty()) {
-            int personCount = 1;
-            System.out.println("Total registered {" + allPersons.size() + "} persons");
-            for (String personName : allPersons) {
-                System.out.println(personCount + ". " + personName);
-                personCount++;
-            }
-        } else {
-            System.out.println("No registered persons");
-        }
+        System.out.println("________________________________________________________");
+        System.out.println("                      All options:");
+        System.out.println("  1. Add new person        |      3. Show all persons");
+        System.out.println("  2. Add new spend         |      4. Show all spends");
+        System.out.println("              5. What everyone has to pay");
+        System.out.println("                        6. Exit");
     }
 
     public void addNewPerson() {
@@ -95,12 +80,37 @@ public final class SawApp {
         }
     }
 
+    public void showAllPersons() {
+        Set<String> allPersons = appService.getAllPerson();
+
+        if (!allPersons.isEmpty()) {
+            int personCount = 1;
+            System.out.println("Total registered {" + allPersons.size() + "} persons");
+            for (String personName : allPersons) {
+                System.out.println(personCount + ". " + personName);
+                personCount++;
+            }
+        } else {
+            System.out.println("No registered persons");
+        }
+    }
+
+    public void showAllSpends() {
+        int allSpends = appService.getAllSpends();
+
+        if (allSpends == 0) {
+            System.out.println("No expenses");
+        } else {
+            System.out.println("Всего было потрачено: " + allSpends);
+        }
+    }
+
     public void displayEachPersonsShare() {
 
         System.out.println("Each person's share: " + appService.divideAmongEveryone());
     }
 
-    public void actionsToExit() {
+    public void exit() {
 
         System.exit(0);
     }
