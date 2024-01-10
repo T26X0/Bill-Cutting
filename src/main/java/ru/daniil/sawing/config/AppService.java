@@ -14,7 +14,7 @@ public class AppService {
     private int allSpends = 0;
     private final Set<String> allPersons = new HashSet<>();
 
-    public void addNewPerson(String personName) throws NonValidNameException {
+    public void addNewPerson(String personName) throws NonValidNameException, PersonIsExistException {
         isValidPersonName(personName);
         if (allPersons.contains(personName)) {
             throw new PersonIsExistException("Person + {" + personName + "} already exist");
@@ -48,7 +48,7 @@ public class AppService {
         }
     }
 
-    private static void isValidPersonName(String personName) {
+    private static void isValidPersonName(String personName) throws NonValidNameException {
         if (personName.length() < MIN_NAME_LENGTH || personName.length() > MAX_NAME_LENGTH) {
             throw new NonValidNameException("The name cannot be shorter than 4 characters and longer than 15");
         }

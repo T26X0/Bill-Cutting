@@ -57,8 +57,8 @@ public final class SawApp {
         personName = getNextString();
         try {
             appService.addNewPerson(personName);
-        } catch (PersonIsExistException e) {
-            System.out.println("This user already exists");
+        } catch (PersonIsExistException | NonValidNameException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -69,7 +69,8 @@ public final class SawApp {
 
         if (newSpend == INPUT_ERROR) {
             System.out.println("The application only considers integer values");
-        } else if (newSpend == 0) {
+        }
+        if (newSpend == 0) {
             System.out.println("Can't add zero");
         } else {
             try {

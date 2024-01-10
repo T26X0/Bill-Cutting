@@ -23,7 +23,11 @@ class AppServiceTest {
     void addNewValidPerson() {
 
         boolean firstAnswer = appService.getAllPerson().contains("Daniil");
-        appService.addNewPerson("Daniil");
+        try {
+            appService.addNewPerson("Daniil");
+        } catch (NonValidNameException | PersonIsExistException e) {
+            System.out.println(e.getMessage());
+        }
 
         boolean secondAnswer = appService.getAllPerson().contains("Daniil");
         Assertions.assertNotEquals(firstAnswer, secondAnswer);
@@ -32,7 +36,11 @@ class AppServiceTest {
     @Test
     void addExistPerson() {
 
-        appService.addNewPerson("Nikita");
+        try {
+            appService.addNewPerson("Nikita");
+        } catch (NonValidNameException | PersonIsExistException e) {
+            System.out.println(e.getMessage());
+        }
         Assertions.assertThrows(PersonIsExistException.class, () -> {
             appService.addNewPerson("Nikita");
         });
@@ -54,7 +62,11 @@ class AppServiceTest {
 
     @Test
     void addNewValidSpends() {
-        appService.addSpend(NEW_VALID_SPEND);
+        try {
+            appService.addSpend(NEW_VALID_SPEND);
+        } catch (ZeroSpendsException e) {
+            System.out.println(e.getMessage());
+        }
         Assertions.assertEquals(NEW_VALID_SPEND, appService.getAllSpends());
     }
 
@@ -68,7 +80,11 @@ class AppServiceTest {
     @Test
     void displayEachPersonsShare() {
         int firstResult = appService.getAllSpends();
-        appService.addSpend(100);
+        try {
+            appService.addSpend(100);
+        } catch (ZeroSpendsException e) {
+            System.out.println(e.getMessage());
+        }
         Assertions.assertTrue(firstResult < appService.getAllSpends());
     }
 }
