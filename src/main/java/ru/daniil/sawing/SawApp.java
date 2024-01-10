@@ -14,8 +14,6 @@ public final class SawApp {
     private static final Scanner input = new Scanner(System.in);
     private final AppService appService = new AppService();
     private final int INPUT_ERROR = -1;
-    private String personName;
-    private int newSpend;
 
     public static void main(String[] args) {
         SawApp app = new SawApp();
@@ -54,7 +52,7 @@ public final class SawApp {
 
     public void addNewPerson() {
         System.out.println("Enter the name of the new participant:");
-        personName = getNextString();
+        String personName = getNextString();
         try {
             appService.addNewPerson(personName);
         } catch (PersonIsExistException | NonValidNameException e) {
@@ -65,7 +63,7 @@ public final class SawApp {
     public void addNewSpend() {
 
         System.out.println("Enter new spend: ");
-        newSpend = getNextInteger();
+        int newSpend = getNextInteger();
 
         if (newSpend == INPUT_ERROR) {
             System.out.println("The application only considers integer values");
