@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import ru.daniil.split.config.AppService;
 import ru.daniil.split.exceptions.NonValidNameException;
 import ru.daniil.split.exceptions.PersonIsExistException;
-import ru.daniil.split.exceptions.ZeroSpendsException;
+import ru.daniil.split.exceptions.NegativeSpendException;
 
 class AppServiceTest {
 
@@ -64,7 +64,7 @@ class AppServiceTest {
     void addNewValidSpends() {
         try {
             appService.addSpend(NEW_VALID_SPEND);
-        } catch (ZeroSpendsException e) {
+        } catch (NegativeSpendException e) {
             System.out.println(e.getMessage());
         }
         Assertions.assertEquals(NEW_VALID_SPEND, appService.getAllSpends());
@@ -72,7 +72,7 @@ class AppServiceTest {
 
     @Test
     void addNewNegativeSpends() {
-        Assertions.assertThrows(ZeroSpendsException.class, () -> {
+        Assertions.assertThrows(NegativeSpendException.class, () -> {
             appService.addSpend(NEW_NEGATIVE_SPEND);
         });
     }
@@ -82,7 +82,7 @@ class AppServiceTest {
         int firstResult = appService.getAllSpends();
         try {
             appService.addSpend(100);
-        } catch (ZeroSpendsException e) {
+        } catch (NegativeSpendException e) {
             System.out.println(e.getMessage());
         }
         Assertions.assertTrue(firstResult < appService.getAllSpends());

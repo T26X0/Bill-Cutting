@@ -2,7 +2,7 @@ package ru.daniil.split.config;
 
 import ru.daniil.split.exceptions.NonValidNameException;
 import ru.daniil.split.exceptions.PersonIsExistException;
-import ru.daniil.split.exceptions.ZeroSpendsException;
+import ru.daniil.split.exceptions.NegativeSpendException;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -20,7 +20,7 @@ public class AppService {
         allPersons.add(personName);
     }
 
-    public void addSpend(int newSpend) throws ZeroSpendsException {
+    public void addSpend(int newSpend) throws NegativeSpendException {
         isValidSpend(newSpend);
         allSpends += newSpend;
     }
@@ -40,9 +40,9 @@ public class AppService {
         return new BigDecimal(allSpends / allPersons.size());
     }
 
-    private void isValidSpend(int newSpend) throws ZeroSpendsException {
-        if (newSpend <= 0) {
-            throw new ZeroSpendsException("Spending can't be negative");
+    private void isValidSpend(int newSpend) throws NegativeSpendException {
+        if (newSpend < 0) {
+            throw new NegativeSpendException("Spending can't be negative");
         }
     }
 

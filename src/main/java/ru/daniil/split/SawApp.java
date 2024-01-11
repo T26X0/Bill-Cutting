@@ -3,7 +3,7 @@ package ru.daniil.split;
 import ru.daniil.split.config.AppService;
 import ru.daniil.split.exceptions.NonValidNameException;
 import ru.daniil.split.exceptions.PersonIsExistException;
-import ru.daniil.split.exceptions.ZeroSpendsException;
+import ru.daniil.split.exceptions.NegativeSpendException;
 
 import java.util.Scanner;
 import java.util.Set;
@@ -65,21 +65,18 @@ public final class SawApp {
     }
 
     public void addNewSpend() {
-
+        int newSpend;
         System.out.println("Enter new spend: ");
-        int newSpend = getNextInteger();
 
-        if (newSpend == INPUT_ERROR) {
-            System.out.println("The application only considers integer values");
+        try {
+            newSpend = getNextInteger();
+        } catch (NumberFormatException e) {
+            newSpend = 0;
         }
-        if (newSpend == 0) {
-            System.out.println("Can't add zero");
-        } else {
-            try {
-                appService.addSpend(newSpend);
-            } catch (ZeroSpendsException e) {
-                System.out.println("Can't add negative number");
-            }
+        try {
+            appService.addSpend(newSpend);
+        } catch (NegativeSpendException e) {
+            System.out.println("Can't add negative number");
         }
     }
 
@@ -123,10 +120,7 @@ public final class SawApp {
     }
 
     private int getNextInteger() {
-        try {
-            return Integer.parseInt(input.nextLine().trim());
-        } catch (NumberFormatException e) {
-            return INPUT_ERROR;
-        }
+        return Integer.parseInt(input.nextLine().trim());
+
     }
 }
