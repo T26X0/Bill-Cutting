@@ -83,16 +83,16 @@ public final class SawApp {
     public void showAllPersons() {
         Set<String> allPersons = appService.getAllPerson();
 
-        if (!allPersons.isEmpty()) {
-            int personCount = 1;
-            System.out.println("Total registered {" + allPersons.size() + "} persons");
-            for (String personName : allPersons) {
-                System.out.println(personCount + ". " + personName);
-                personCount++;
-            }
-        } else {
+        if (allPersons.isEmpty()) {
             System.out.println("No registered persons");
+            return;
         }
+
+        System.out.println("All registered persons:");
+        for (String personName : allPersons) {
+            System.out.println("* " + personName);
+        }
+
     }
 
     public void showAllSpends() {
