@@ -1,5 +1,6 @@
 package ru.daniil.split;
 
+import org.w3c.dom.ls.LSOutput;
 import ru.daniil.split.config.AppService;
 import ru.daniil.split.exceptions.NonValidNameException;
 import ru.daniil.split.exceptions.PersonIsExistException;
@@ -65,12 +66,13 @@ public final class SawApp {
 
     public void addNewSpend() {
         int newSpend;
-        System.out.println("Enter new spend: ");
+        System.out.println("Enter new spend:");
 
         try {
             newSpend = getNextInteger();
         } catch (NumberFormatException e) {
-            newSpend = 0;
+            System.out.println("spends can only be an integer");
+            return;
         }
         try {
             appService.addSpend(newSpend);
