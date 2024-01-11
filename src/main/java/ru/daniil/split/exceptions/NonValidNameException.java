@@ -1,4 +1,4 @@
-package ru.daniil.sawing.myExceptions;
+package ru.daniil.split.exceptions;
 
 public class NonValidNameException extends Exception {
 

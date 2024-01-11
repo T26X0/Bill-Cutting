@@ -1,9 +1,9 @@
-package ru.daniil.sawing;
+package ru.daniil.split;
 
-import ru.daniil.sawing.config.AppService;
-import ru.daniil.sawing.myExceptions.NonValidNameException;
-import ru.daniil.sawing.myExceptions.PersonIsExistException;
-import ru.daniil.sawing.myExceptions.ZeroSpendsException;
+import ru.daniil.split.config.AppService;
+import ru.daniil.split.exceptions.NonValidNameException;
+import ru.daniil.split.exceptions.PersonIsExistException;
+import ru.daniil.split.exceptions.ZeroSpendsException;
 
 import java.util.Scanner;
 import java.util.Set;
@@ -55,8 +55,12 @@ public final class SawApp {
         String personName = getNextString();
         try {
             appService.addNewPerson(personName);
-        } catch (PersonIsExistException | NonValidNameException e) {
-            System.out.println(e.getMessage());
+        } catch (PersonIsExistException e) {
+            System.out.println("A person " + personName + " is exist.");
+        } catch (NonValidNameException e) {
+            System.out.println("The username entered is incorrect. " +
+                    "    * It must be between 4 and 15 characters long" +
+                    "    * Must be one word");
         }
     }
 

@@ -1,12 +1,12 @@
-package ru.daniil.sawing;
+package ru.daniil.split;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.daniil.sawing.config.AppService;
-import ru.daniil.sawing.myExceptions.NonValidNameException;
-import ru.daniil.sawing.myExceptions.PersonIsExistException;
-import ru.daniil.sawing.myExceptions.ZeroSpendsException;
+import ru.daniil.split.config.AppService;
+import ru.daniil.split.exceptions.NonValidNameException;
+import ru.daniil.split.exceptions.PersonIsExistException;
+import ru.daniil.split.exceptions.ZeroSpendsException;
 
 class AppServiceTest {
 
