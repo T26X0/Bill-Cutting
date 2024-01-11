@@ -50,8 +50,7 @@ public class AppService {
         if (personName.length() < MIN_NAME_LENGTH || personName.length() > MAX_NAME_LENGTH) {
             throw new NonValidNameException("The name cannot be shorter than 4 characters and longer than 15");
         }
-        int wordCount = personName.split(" ").length;
-        if (wordCount > 1) {
+        if (personName.contains(" ")) {
             throw new NonValidNameException("The person name can only consist of one word");
         }
     }
