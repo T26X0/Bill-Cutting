@@ -11,9 +11,8 @@ import java.util.Set;
 
 public final class SawApp {
 
-    private static final Scanner input = new Scanner(System.in);
+    private final Scanner input = new Scanner(System.in);
     private final AppService appService = new AppService();
-    private final int INPUT_ERROR = -1;
 
     public static void main(String[] args) {
         SawApp app = new SawApp();
@@ -100,18 +99,16 @@ public final class SawApp {
 
         if (allSpends == 0) {
             System.out.println("No expenses");
-        } else {
-            System.out.println("Всего было потрачено: " + allSpends);
+            return;
         }
+        System.out.println("Всего было потрачено: " + allSpends);
     }
 
     public void displayEachPersonsShare() {
-
         System.out.println("Each person's share: " + appService.divideAmongEveryone());
     }
 
     public void exit() {
-
         System.exit(0);
     }
 
