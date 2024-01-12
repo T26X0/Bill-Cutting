@@ -37,7 +37,10 @@ public class AppService {
         if (allPersons.isEmpty()) {
             return new BigDecimal(0);
         }
-        return new BigDecimal(allSpends / allPersons.size());
+
+        BigDecimal allExpenses = new BigDecimal(allSpends);
+        BigDecimal personCount = new BigDecimal(allPersons.size());
+        return allExpenses.divide(personCount);
     }
 
     private void isValidSpend(int newSpend) throws NegativeSpendException {
