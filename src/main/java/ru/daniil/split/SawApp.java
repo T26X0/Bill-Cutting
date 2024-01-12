@@ -6,6 +6,7 @@ import ru.daniil.split.exceptions.NonValidNameException;
 import ru.daniil.split.exceptions.PersonIsExistException;
 import ru.daniil.split.exceptions.NegativeSpendException;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -103,10 +104,20 @@ public final class SawApp {
             System.out.println("No expenses");
             return;
         }
-        System.out.println("Всего было потрачено: " + allSpends);
+        System.out.println("Total was spends: " + allSpends);
     }
 
     public void displayEachPersonsShare() {
+        BigDecimal result = appService.divideAmongEveryone();
+        if (result.equals(new BigDecimal(0))) {
+            System.out.println("No expenses");
+            return;
+        }
+        int quantityPerson = appService.getAllPerson().size();
+        if (quantityPerson == 0) {
+            System.out.println("No users need to pay for the account");
+            return;
+        }
         System.out.println("Each person's share: " + appService.divideAmongEveryone());
     }
 
