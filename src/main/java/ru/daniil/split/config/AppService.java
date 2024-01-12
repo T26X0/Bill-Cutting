@@ -5,6 +5,7 @@ import ru.daniil.split.exceptions.PersonIsExistException;
 import ru.daniil.split.exceptions.NegativeSpendException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class AppService {
@@ -40,7 +41,7 @@ public class AppService {
 
         BigDecimal allExpenses = new BigDecimal(allSpends);
         BigDecimal personCount = new BigDecimal(allPersons.size());
-        return allExpenses.divide(personCount);
+        return allExpenses.divide(personCount, RoundingMode.CEILING);
     }
 
     private void isValidSpend(int newSpend) throws NegativeSpendException {
