@@ -1,12 +1,13 @@
 package ru.daniil.split;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.daniil.split.config.AppService;
 import ru.daniil.split.exceptions.NonValidNameException;
 import ru.daniil.split.exceptions.PersonIsExistException;
 import ru.daniil.split.exceptions.NegativeSpendException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class AppServiceTest {
 
@@ -30,7 +31,7 @@ class AppServiceTest {
         }
 
         boolean secondAnswer = appService.getAllPerson().contains("Daniil");
-        Assertions.assertNotEquals(firstAnswer, secondAnswer);
+        assertNotEquals(firstAnswer, secondAnswer);
     }
 
     @Test
@@ -41,21 +42,21 @@ class AppServiceTest {
         } catch (NonValidNameException | PersonIsExistException e) {
             System.out.println(e.getMessage());
         }
-        Assertions.assertThrows(PersonIsExistException.class, () -> {
+        assertThrows(PersonIsExistException.class, () -> {
             appService.addNewPerson("Nikita");
         });
     }
 
     @Test
     void addNewNonValidPersons_1() {
-        Assertions.assertThrows(NonValidNameException.class, () -> {
+        assertThrows(NonValidNameException.class, () -> {
             appService.addNewPerson("Kostya Petrov");
         });
     }
 
     @Test
     void addNewNonValidPersons_2() {
-        Assertions.assertThrows(NonValidNameException.class, () -> {
+        assertThrows(NonValidNameException.class, () -> {
             appService.addNewPerson("Dab");
         });
     }
@@ -67,12 +68,12 @@ class AppServiceTest {
         } catch (NegativeSpendException e) {
             System.out.println(e.getMessage());
         }
-        Assertions.assertEquals(NEW_VALID_SPEND, appService.getAllSpends());
+        assertEquals(NEW_VALID_SPEND, appService.getAllSpends());
     }
 
     @Test
     void addNewNegativeSpends() {
-        Assertions.assertThrows(NegativeSpendException.class, () -> {
+        assertThrows(NegativeSpendException.class, () -> {
             appService.addSpend(NEW_NEGATIVE_SPEND);
         });
     }
@@ -85,6 +86,6 @@ class AppServiceTest {
         } catch (NegativeSpendException e) {
             System.out.println(e.getMessage());
         }
-        Assertions.assertTrue(firstResult < appService.getAllSpends());
+        assertTrue(firstResult < appService.getAllSpends());
     }
 }
