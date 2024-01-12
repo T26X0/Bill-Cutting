@@ -7,6 +7,8 @@ import ru.daniil.split.exceptions.NonValidNameException;
 import ru.daniil.split.exceptions.PersonIsExistException;
 import ru.daniil.split.exceptions.NegativeSpendException;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppServiceTest {
@@ -79,13 +81,35 @@ class AppServiceTest {
     }
 
     @Test
-    void displayEachPersonsShare() {
-        int firstResult = appService.getAllSpends();
-        try {
-            appService.addSpend(100);
-        } catch (NegativeSpendException e) {
-            System.out.println(e.getMessage());
+    void displayEachPersonsShare() throws NonValidNameException, PersonIsExistException, NegativeSpendException {
+        AppService service2 = createAppService(0);
+        AppService service1 = createAppService(0, "Daniil", "Nikita", "Oleg");
+        AppService service3 = createAppService(200, "Daniil", "Nikita", "Oleg");
+        AppService service4 = createAppService(200, "Daniil", "Nikita", "Oleg", "Maxim");
+        AppService service5 = createAppService(789);
+        AppService service6 = createAppService(789, "Daniil", "Nikita", "Oleg", "Maxim");
+
+        assertAll(
+                () -> assertEquals(new BigDecimal(0), service1.divideAmongEveryone()),
+                () -> assertEquals(new BigDecimal(0), service2.divideAmongEveryone()),
+                () -> assertEquals(new BigDecimal(67), service3.divideAmongEveryone()),
+                () -> assertEquals(new BigDecimal(50), service4.divideAmongEveryone()),
+                () -> assertEquals(new BigDecimal(0), service5.divideAmongEveryone()),
+                () -> assertEquals(new BigDecimal(198), service6.divideAmongEveryone())
+        );
+    }
+
+    private AppService createAppService(int allSpends, String... allPersons) throws NegativeSpendException, NonValidNameException, PersonIsExistException {
+        AppService service = new AppService();
+        service.addSpend(allSpends);
+
+        if (allPersons == null) {
+            return service;
         }
-        assertTrue(firstResult < appService.getAllSpends());
+        for (String personName : allPersons) {
+            service.addNewPerson(personName);
+        }
+
+        return service;
     }
 }
