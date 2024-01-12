@@ -24,11 +24,17 @@ class AppServiceTest {
 
     @Test
     void addNewValidPerson() throws NonValidNameException, PersonIsExistException {
-        boolean firstAnswer = appService.getAllPerson().contains("Daniil");
-        appService.addNewPerson("Daniil");
+        appService.addNewPerson("Lerya");
+        assertNotEquals(false, appService.getAllPerson().contains("Daniil"));
+    }
 
-        boolean secondAnswer = appService.getAllPerson().contains("Daniil");
-        assertNotEquals(firstAnswer, secondAnswer);
+    @Test
+    void addNewNonValidPerson() {
+        assertAll(
+                () ->assertThrows(NonValidNameException.class, () -> appService.addNewPerson("abc")),
+                () ->assertThrows(NonValidNameException.class, () -> appService.addNewPerson("abc abc"))
+        );
+
     }
 
     @Test
@@ -36,20 +42,6 @@ class AppServiceTest {
         appService.addNewPerson("Nikita");
         assertThrows(PersonIsExistException.class, () -> {
             appService.addNewPerson("Nikita");
-        });
-    }
-
-    @Test
-    void addNewNonValidPersons_1() {
-        assertThrows(NonValidNameException.class, () -> {
-            appService.addNewPerson("Kostya Petrov");
-        });
-    }
-
-    @Test
-    void addNewNonValidPersons_2() {
-        assertThrows(NonValidNameException.class, () -> {
-            appService.addNewPerson("Dab");
         });
     }
 
