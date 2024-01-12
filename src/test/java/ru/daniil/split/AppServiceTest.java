@@ -1,6 +1,7 @@
 package ru.daniil.split;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.daniil.split.config.AppService;
 import ru.daniil.split.exceptions.NonValidNameException;
@@ -59,6 +60,7 @@ class AppServiceTest {
     }
 
     @Test
+    @DisplayName("Test case for testing different variations")
     void displayEachPersonsShare() throws NonValidNameException, PersonIsExistException, NegativeSpendException {
         AppService service2 = createAppService(0);
         AppService service1 = createAppService(0, "Daniil", "Nikita", "Oleg");
@@ -77,6 +79,11 @@ class AppServiceTest {
         );
     }
 
+    /**
+     *  A method that creates a new service with given parameters
+     * @param allSpends -> the sum of all expenses
+     * @param allPersons -> Array of all usernames
+     */
     private AppService createAppService(int allSpends, String... allPersons) throws NegativeSpendException, NonValidNameException, PersonIsExistException {
         AppService service = new AppService();
         service.addSpend(allSpends);
