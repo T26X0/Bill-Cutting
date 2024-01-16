@@ -1,7 +1,7 @@
 package ru.daniil.split.service;
 
 import ru.daniil.split.exceptions.NonValidArgumentException;
-import ru.daniil.split.exceptions.DoubleEntryException;
+import ru.daniil.split.exceptions.DuplicateResourceException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,7 +14,7 @@ public class PersonService {
     private int allSpends = 0;
     private final Set<String> allPersons = new HashSet<>();
 
-    public void addNewPerson(String personName) throws NonValidArgumentException, DoubleEntryException {
+    public void addNewPerson(String personName) throws NonValidArgumentException, DuplicateResourceException {
         isValidPersonName(personName);
         personIsExist(personName);
         allPersons.add(personName);
@@ -60,9 +60,9 @@ public class PersonService {
         }
     }
 
-    private void personIsExist(String personName) throws DoubleEntryException {
+    private void personIsExist(String personName) throws DuplicateResourceException {
         if (allPersons.contains(personName)) {
-            throw new DoubleEntryException("Person + {" + personName + "} already exist");
+            throw new DuplicateResourceException("Person + {" + personName + "} already exist");
         }
     }
 }

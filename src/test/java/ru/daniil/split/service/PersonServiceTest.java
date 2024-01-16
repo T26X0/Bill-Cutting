@@ -1,15 +1,11 @@
 package ru.daniil.split.service;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import ru.daniil.split.service.PersonService;
+import ru.daniil.split.exceptions.DuplicateResourceException;
 import ru.daniil.split.exceptions.NonValidArgumentException;
-import ru.daniil.split.exceptions.DoubleEntryException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,7 +25,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void addNewValidPerson() throws NonValidArgumentException, DoubleEntryException {
+    void addNewValidPerson() throws NonValidArgumentException, DuplicateResourceException {
         personService.addNewPerson("Lerya");
         assertNotEquals(false, personService.getAllPerson().contains("Lerya"));
     }
@@ -44,9 +40,9 @@ class PersonServiceTest {
     }
 
     @Test
-    void addExistPerson() throws NonValidArgumentException, DoubleEntryException {
+    void addExistPerson() throws NonValidArgumentException, DuplicateResourceException {
         personService.addNewPerson("Nikita");
-        assertThrows(DoubleEntryException.class, () -> {
+        assertThrows(DuplicateResourceException.class, () -> {
             personService.addNewPerson("Nikita");
         });
     }
@@ -64,37 +60,27 @@ class PersonServiceTest {
         });
     }
 
-    @ParameterizedTest()
-    @MethodSource()
-    void displayEachPersonsShare(int expectedResult, PersonService service) {
-        assertEquals(new BigDecimal(expectedResult), service.divideAmongEveryone());
-    }
-
-    static Stream<Object[]> displayEachPersonsShare() throws NonValidArgumentException, DoubleEntryException {
-        return Stream.of(
-                new Object[]{0, createAppService(0, List.of())},
-                new Object[]{0, createAppService(0, List.of("Daniil", "Nikita", "Oleg"))},
-                new Object[]{67, createAppService(200, List.of("Daniil", "Nikita", "Oleg"))},
-                new Object[]{50, createAppService(200, List.of("Daniil", "Nikita", "Oleg", "Maxim"))},
-                new Object[]{0, createAppService(789, List.of())},
-                new Object[]{198, createAppService(789, List.of("Daniil", "Nikita", "Oleg", "Maxim"))}
-        );
-    }
-
-    /**
-     * A method that creates a new service with given parameters
-     *
-     * @param allSpends  -> the sum of all expenses
-     * @param allPersons -> Array of all usernames
-     */
-    private static PersonService createAppService(int allSpends, List<String> allPersons) throws NonValidArgumentException, DoubleEntryException {
-        PersonService service = new PersonService();
-        service.addSpend(allSpends);
-
-        for (String personName : allPersons) {
-            service.addNewPerson(personName);
+    @MethodSource
+    @ParameterizedTest
+    void displayEachPersonsShare(BigDecimal expectedResult, int money, List<String> names) throws NonValidArgumentException, DuplicateResourceException {
+        personService.addSpend(money);
+        for (String personName : names) {
+            personService.addNewPerson(personName);
         }
 
-        return service;
+        BigDecimal result = personService.divideAmongEveryone();
+
+        assertEquals(expectedResult, result);
+    }
+
+    static Stream<Object[]> displayEachPersonsShare() {
+        return Stream.of(
+                new Object[]{new BigDecimal(0), 0, List.of()},
+                new Object[]{new BigDecimal(0), 0, List.of("Daniil", "Nikita", "Oleg")},
+                new Object[]{new BigDecimal(67), 200, List.of("Daniil", "Nikita", "Oleg")},
+                new Object[]{new BigDecimal(50), 200, List.of("Daniil", "Nikita", "Oleg", "Maxim")},
+                new Object[]{new BigDecimal(0), 789, List.of()},
+                new Object[]{new BigDecimal(198), 789, List.of("Daniil", "Nikita", "Oleg", "Maxim")}
+        );
     }
 }

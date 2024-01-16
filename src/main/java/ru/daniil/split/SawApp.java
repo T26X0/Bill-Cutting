@@ -2,7 +2,7 @@ package ru.daniil.split;
 
 import ru.daniil.split.service.PersonService;
 import ru.daniil.split.exceptions.NonValidArgumentException;
-import ru.daniil.split.exceptions.DoubleEntryException;
+import ru.daniil.split.exceptions.DuplicateResourceException;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -54,7 +54,7 @@ public final class SawApp {
         String personName = getNextString();
         try {
             personService.addNewPerson(personName);
-        } catch (DoubleEntryException e) {
+        } catch (DuplicateResourceException e) {
             System.out.println("A person " + personName + " is exist.");
         } catch (NonValidArgumentException e) {
             System.out.println("The username entered is incorrect. \n" +
