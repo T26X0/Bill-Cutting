@@ -1,5 +1,6 @@
 package ru.daniil.split.service;
 
+import ru.daniil.split.dao.PersonDAO;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 
