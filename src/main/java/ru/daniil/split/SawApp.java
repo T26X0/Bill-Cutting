@@ -1,5 +1,6 @@
 package ru.daniil.split;
 
+import ru.daniil.split.model.Person;
 import ru.daniil.split.service.PersonService;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
@@ -14,7 +15,7 @@ public final class SawApp {
     private final Scanner input = new Scanner(System.in);
     private final PersonService personService = new PersonService();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DuplicateResourceException {
         SawApp app = new SawApp();
         app.runApp();
     }
@@ -29,12 +30,24 @@ public final class SawApp {
             answer = getNextString();
             switch (answer) {
                 case "1" -> addNewPerson();
-                case "2" -> addNewSpend();
+                case "2" -> {
+                    if (personService.getAllPerson().isEmpty()) {
+                        showError();
+                    } else {
+                        addNewSpend();
+                    }
+                }
                 case "3" -> showAllPersons();
-                case "4" -> showAllSpends();
+                case "4" -> {
+                    if (personService.getAllPerson().isEmpty()) {
+                        showError();
+                    } else {
+                        showAllSpends();
+                    }
+                }
                 case "5" -> displayEachPersonsShare();
                 case "6" -> exit();
-                default -> System.out.println("You made a mistake when entering data");
+                default -> showError();
             }
         }
     }
@@ -44,7 +57,11 @@ public final class SawApp {
         System.out.println("________________________________________________________");
         System.out.println("                      All options:");
         System.out.println("  1. Add new person        |      3. Show all persons");
-        System.out.println("  2. Add new spend         |      4. Show all spends");
+        if (personService.getAllPerson().isEmpty()) {
+            System.out.println("      (add expenses you must add at least one user)");
+        } else {
+            System.out.println("  2. Add new spend         |      4. Show all spends");
+        }
         System.out.println("              5. What everyone has to pay");
         System.out.println("                        6. Exit");
     }
@@ -63,9 +80,23 @@ public final class SawApp {
     }
 
     public void addNewSpend() {
-        int newSpend;
-        System.out.println("Enter new spend:");
 
+        System.out.println("\"1\" if you want to enter a total spend");
+        System.out.println("\"2\" if you want to enter a personal spend for one person");
+
+        String answer = getNextString();
+
+        switch (answer) {
+            case "1" -> addNewGeneralSpend();
+            case "2" -> addNewPersonalSpend();
+            default -> showError();
+        }
+    }
+
+    private void addNewGeneralSpend() {
+        int newSpend;
+
+        System.out.println("Enter spend: ");
         try {
             newSpend = getNextInteger();
         } catch (NumberFormatException e) {
@@ -77,9 +108,39 @@ public final class SawApp {
         } catch (NonValidArgumentException e) {
             System.out.println("Negative cannot be negative");
         }
+
+    }
+
+    private void addNewPersonalSpend() {
+        String personName;
+        int newSpend;
+
+        showAllPersons();
+        System.out.println("Enter person name: ");
+        personName = getNextString();
+
+        if (personService.nonContains(personName)) {
+            System.out.println("Person " + personName + " is non registered");
+            return;
+        }
+
+        System.out.println("Enter spend: ");
+        try {
+            newSpend = getNextInteger();
+        } catch (NumberFormatException e) {
+            System.out.println("spends can only be an integer");
+            return;
+        }
+
+        try {
+            personService.addSpend(personName, newSpend);
+        } catch (NonValidArgumentException e) {
+            System.out.println("Negative cannot be negative");
+        }
     }
 
     public void showAllPersons() {
+        System.out.println();
         Set<String> allPersons = personService.getAllPerson();
 
         if (allPersons.isEmpty()) {
@@ -95,9 +156,9 @@ public final class SawApp {
     }
 
     public void showAllSpends() {
-        int allSpends = personService.getAllSpends();
+        BigDecimal allSpends = personService.getAllSpends();
 
-        if (allSpends == 0) {
+        if (allSpends.signum() == 0) {
             System.out.println("No expenses");
             return;
         }
@@ -120,6 +181,11 @@ public final class SawApp {
 
     public void exit() {
         System.exit(0);
+    }
+
+    private void showError() {
+        System.out.println();
+        System.out.println("You made a mistake when entering data");
     }
 
     private String getNextString() {

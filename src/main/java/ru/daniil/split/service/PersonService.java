@@ -1,6 +1,7 @@
 package ru.daniil.split.service;
 
 import ru.daniil.split.dao.InMemoryPersonDAO;
+import ru.daniil.split.dao.PersonDAO;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 import ru.daniil.split.model.Person;
@@ -13,7 +14,7 @@ public class PersonService {
 
     private final int MAX_NAME_LENGTH = 15;
     private final int MIN_NAME_LENGTH = 4;
-    private final InMemoryPersonDAO inMemoryPersonDAO = new InMemoryPersonDAO();
+    private final InMemoryPersonDAO inMemoryPersonDAO = new InMemoryPersonDAO   ();
 
     public void addNewPerson(String personName) throws NonValidArgumentException, DuplicateResourceException {
         isValidPersonName(personName);
@@ -106,7 +107,6 @@ public class PersonService {
         for (Person person : allPerson) {
             if (person.name.equals(personName)) {
                 throw new DuplicateResourceException("Person {" + personName + "} already exist");
-                return true;
             }
         }
     }

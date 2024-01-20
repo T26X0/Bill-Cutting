@@ -3,11 +3,14 @@ package ru.daniil.split.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 import ru.daniil.split.exceptions.NonValidArgumentException;
+import ru.daniil.split.model.Person;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -48,24 +51,33 @@ class PersonServiceTest {
     }
 
     @Test
-    void addNewValidSpends() throws NonValidArgumentException {
-        personService.addSpend(NEW_VALID_SPEND);
-        assertEquals(NEW_VALID_SPEND, personService.getAllSpends());
+    void addNewValidSpends() throws NonValidArgumentException, DuplicateResourceException {
+        personService.addNewPerson("Pavel");
+        personService.addSpend("Pavel", NEW_VALID_SPEND);
+
+        assertEquals(new BigDecimal(NEW_VALID_SPEND), personService.getAllSpends());
     }
 
     @Test
     void addNewNegativeSpends() {
-        assertThrows(NonValidArgumentException.class, () -> {
-            personService.addSpend(NEW_NEGATIVE_SPEND);
-        });
+        assertAll(
+                () -> assertThrows(NonValidArgumentException.class, () -> {
+                    personService.addSpend("Daniil", NEW_NEGATIVE_SPEND);
+                }),
+                () -> assertThrows(NonValidArgumentException.class, () -> {
+                    personService.addSpend("Daniil", 0);
+                })
+        );
     }
 
-    @MethodSource
+    @MethodSource("provideAppliesToTest")
     @ParameterizedTest
-    void displayEachPersonsShare(BigDecimal expectedResult, int money, List<String> names) throws NonValidArgumentException, DuplicateResourceException {
-        personService.addSpend(money);
-        for (String personName : names) {
-            personService.addNewPerson(personName);
+    void displayEachPersonsShare(BigDecimal expectedResult, List<Integer> spends, List<String> names)
+            throws NonValidArgumentException, DuplicateResourceException {
+
+        for (int i = 0; i < names.size(); i++) {
+            personService.addNewPerson(names.get(i));
+            if (spends.get(i) != 0) personService.addSpend(names.get(i), spends.get(i));
         }
 
         BigDecimal result = personService.divideAmongEveryone();
@@ -73,14 +85,17 @@ class PersonServiceTest {
         assertEquals(expectedResult, result);
     }
 
-    static Stream<Object[]> displayEachPersonsShare() {
+    private static Stream<Arguments> provideAppliesToTest() {
         return Stream.of(
-                new Object[]{new BigDecimal(0), 0, List.of()},
-                new Object[]{new BigDecimal(0), 0, List.of("Daniil", "Nikita", "Oleg")},
-                new Object[]{new BigDecimal(67), 200, List.of("Daniil", "Nikita", "Oleg")},
-                new Object[]{new BigDecimal(50), 200, List.of("Daniil", "Nikita", "Oleg", "Maxim")},
-                new Object[]{new BigDecimal(0), 789, List.of()},
-                new Object[]{new BigDecimal(198), 789, List.of("Daniil", "Nikita", "Oleg", "Maxim")}
+                Arguments.of(new BigDecimal(200),
+                        List.of(100, 200, 300),
+                        List.of("Daniil", "Nikita", "Oleg")),
+                Arguments.of(new BigDecimal(150),
+                        List.of(100, 200, 300, 0),
+                        List.of("Daniil", "Nikita", "Oleg", "Maxim")),
+                Arguments.of(new BigDecimal(250),
+                        List.of(100, 200, 300, 400),
+                        List.of("Daniil", "Nikita", "Oleg", "Maxim"))
         );
     }
 }
