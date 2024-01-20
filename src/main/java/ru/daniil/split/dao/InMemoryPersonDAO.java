@@ -11,6 +11,10 @@ public class InMemoryPersonDAO implements PersonDAO {
         this.allPerson = allPerson;
     }
 
+    public InMemoryPersonDAO() {
+        allPerson = new HashMap<>();
+    }
+
     @Override
     public void upsert(Person person) {
         allPerson.put(
