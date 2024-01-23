@@ -32,18 +32,23 @@ public class PersonService {
         return personDAO.getAllPersonNames();
     }
 
+    public int getPersonCount() {
+        return personDAO.getPersonCount();
+    }
+
     public int getAllSpends() {
         return personDAO.getSpends();
     }
 
     public BigDecimal divideAmongEveryone() {
-        if (personDAO.getPersonCount() == 0) {
+        int personCount = personDAO.getPersonCount();
+        if (personCount == 0) {
             return new BigDecimal(0);
         }
 
         BigDecimal allExpenses = new BigDecimal(personDAO.getSpends());
-        BigDecimal personCount = new BigDecimal(personDAO.getPersonCount());
-        return allExpenses.divide(personCount, RoundingMode.CEILING);
+        BigDecimal persons = new BigDecimal(personCount);
+        return allExpenses.divide(persons, RoundingMode.CEILING);
     }
 
     private void isValidSpend(int newSpend) throws NonValidArgumentException {

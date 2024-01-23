@@ -14,7 +14,7 @@ public class InMemoryPersonDAO implements PersonDAO {
     @Override
     public void registerNewPerson(String personName) throws DuplicateResourceException {
         if (allPerson.contains(personName)) {
-            throw new DuplicateResourceException("Personi {" + personName + "}" + " is already registered");
+            throw new DuplicateResourceException("Person {" + personName + "}" + " is already registered");
         }
         allPerson.add(personName);
     }

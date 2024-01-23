@@ -85,7 +85,7 @@ public final class SawApp {
         }
     }
 
-    public void showAllPersons() {
+    public void  showAllPersons() {
         Set<String> allPersons = personService.getAllPerson();
 
         if (allPersons.isEmpty()) {
@@ -94,10 +94,7 @@ public final class SawApp {
         }
 
         System.out.println("All registered persons:");
-        for (String personName : allPersons) {
-            System.out.println("* " + personName);
-        }
-
+        allPersons.forEach(s -> System.out.println("* " + s));
     }
 
     public void showAllSpends() {
@@ -116,7 +113,7 @@ public final class SawApp {
             System.out.println("No expenses");
             return;
         }
-        int quantityPerson = personService.getAllPerson().size();
+        int quantityPerson = personService.getPersonCount();
         if (quantityPerson == 0) {
             System.out.println("No users need to pay for the account");
             return;
