@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.daniil.split.dao.InMemoryPersonDAO;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 
@@ -21,7 +22,7 @@ class PersonServiceTest {
 
     @BeforeEach
     void setUp() {
-        personService = new PersonService();
+        personService = new PersonService(new InMemoryPersonDAO());
     }
 
     @Test

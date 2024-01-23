@@ -1,5 +1,6 @@
 package ru.daniil.split;
 
+import ru.daniil.split.dao.InMemoryPersonDAO;
 import ru.daniil.split.service.PersonService;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
@@ -12,7 +13,7 @@ import java.util.Set;
 public final class SawApp {
 
     private final Scanner input = new Scanner(System.in);
-    private final PersonService personService = new PersonService();
+    private final PersonService personService = new PersonService(new InMemoryPersonDAO());
 
     public static void main(String[] args) {
         SawApp app = new SawApp();
@@ -20,6 +21,12 @@ public final class SawApp {
     }
 
     public void runApp() {
+        final String FIRST_MENU_POINT = "1";
+        final String SECOND_MENU_POINT = "2";
+        final String THIRD_MENU_POINT = "3";
+        final String FOURTH_MENU_POINT = "4";
+        final String FIFTH_MENU_POINT = "5";
+        final String SIXTH_MENU_POINT = "6";
 
         while (true) {
             String answer;
@@ -28,12 +35,12 @@ public final class SawApp {
 
             answer = getNextString();
             switch (answer) {
-                case "1" -> addNewPerson();
-                case "2" -> addNewSpend();
-                case "3" -> showAllPersons();
-                case "4" -> showAllSpends();
-                case "5" -> displayEachPersonsShare();
-                case "6" -> exit();
+                case FIRST_MENU_POINT -> addNewPerson();
+                case SECOND_MENU_POINT -> addNewSpend();
+                case THIRD_MENU_POINT -> showAllPersons();
+                case FOURTH_MENU_POINT -> showAllSpends();
+                case FIFTH_MENU_POINT -> displayEachPersonsShare();
+                case SIXTH_MENU_POINT -> exit();
                 default -> System.out.println("You made a mistake when entering data");
             }
         }
@@ -55,10 +62,9 @@ public final class SawApp {
         try {
             personService.addNewPerson(personName);
         } catch (DuplicateResourceException e) {
-            System.out.println("A person " + personName + " is exist.");
+            System.out.println("Error when creating a new record in the database: \n" + e.getMessage());
         } catch (NonValidArgumentException e) {
-            System.out.println("The username entered is incorrect. \n" +
-                    "    * " + e.getMessage());
+            System.out.println("The username entered is incorrect. \n" + "    * " + e.getMessage());
         }
     }
 
