@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface PersonDAO {
 
-    void registerNewPerson(String personName) throws DuplicateResourceException;
+    void insert(String personName) throws DuplicateResourceException;
 
     Set<String> getAllPersonNames();
 

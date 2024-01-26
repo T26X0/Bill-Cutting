@@ -11,12 +11,13 @@ public class InMemoryPersonDAO implements PersonDAO {
     BigDecimal allSpends = BigDecimal.ZERO;
     Set<String> allPerson = new HashSet<>();
 
+
     @Override
-    public void registerNewPerson(String personName) throws DuplicateResourceException {
-        if (allPerson.contains(personName)) {
-            throw new DuplicateResourceException("Person {" + personName + "}" + " is already registered");
+    public void insert(String person) throws DuplicateResourceException {
+        if (allPerson.contains(person)) {
+            throw new DuplicateResourceException("Such a record already exists");
         }
-        allPerson.add(personName);
+        allPerson.add(person);
     }
 
     @Override

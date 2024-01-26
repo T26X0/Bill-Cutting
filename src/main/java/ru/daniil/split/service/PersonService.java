@@ -20,7 +20,7 @@ public class PersonService {
 
     public void addNewPerson(String personName) throws NonValidArgumentException, DuplicateResourceException {
         isValidPersonName(personName);
-        personDAO.registerNewPerson(personName);
+        personDAO.insert(personName);
     }
 
     public void addSpend(int newSpend) throws NonValidArgumentException {

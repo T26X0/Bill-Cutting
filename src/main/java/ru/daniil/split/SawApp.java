@@ -21,26 +21,26 @@ public final class SawApp {
     }
 
     public void runApp() {
-        final String FIRST_MENU_POINT = "1";
-        final String SECOND_MENU_POINT = "2";
-        final String THIRD_MENU_POINT = "3";
-        final String FOURTH_MENU_POINT = "4";
-        final String FIFTH_MENU_POINT = "5";
-        final String SIXTH_MENU_POINT = "6";
+        final String ADD_NEW_PERSON = "1";
+        final String ADD_NEW_SPEND = "2";
+        final String SHOW_ALL_PERSON = "3";
+        final String SHOW_ALL_SPENDS = "4";
+        final String DISPLAY_EACH_PERSONS_SHARE = "5";
+        final String EXIT = "6";
 
         while (true) {
-            String answer;
+            String userAnswer;
 
             showAppMenu();
 
-            answer = getNextString();
-            switch (answer) {
-                case FIRST_MENU_POINT -> addNewPerson();
-                case SECOND_MENU_POINT -> addNewSpend();
-                case THIRD_MENU_POINT -> showAllPersons();
-                case FOURTH_MENU_POINT -> showAllSpends();
-                case FIFTH_MENU_POINT -> displayEachPersonsShare();
-                case SIXTH_MENU_POINT -> exit();
+            userAnswer = getNextString();
+            switch (userAnswer) {
+                case ADD_NEW_PERSON -> addNewPerson();
+                case ADD_NEW_SPEND -> addNewSpend();
+                case SHOW_ALL_PERSON -> showAllPersons();
+                case SHOW_ALL_SPENDS -> showAllSpends();
+                case DISPLAY_EACH_PERSONS_SHARE -> displayEachPersonsShare();
+                case EXIT -> exit();
                 default -> System.out.println("You made a mistake when entering data");
             }
         }
@@ -62,7 +62,7 @@ public final class SawApp {
         try {
             personService.addNewPerson(personName);
         } catch (DuplicateResourceException e) {
-            System.out.println("Error when creating a new record in the database: \n" + e.getMessage());
+            System.out.println("This person is already registered");
         } catch (NonValidArgumentException e) {
             System.out.println("The username entered is incorrect. \n" + "    * " + e.getMessage());
         }
