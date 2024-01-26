@@ -1,5 +1,6 @@
 package ru.daniil.split.service;
 
+import ru.daniil.split.dao.PersonDAO;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 
@@ -11,39 +12,46 @@ public class PersonService {
 
     private final int MAX_NAME_LENGTH = 15;
     private final int MIN_NAME_LENGTH = 4;
-    private int allSpends = 0;
-    private final Set<String> allPersons = new HashSet<>();
+    private final PersonDAO personDAO;
+
+    public PersonService(PersonDAO personDAO) {
+        this.personDAO = personDAO;
+    }
 
     public void addNewPerson(String personName) throws NonValidArgumentException, DuplicateResourceException {
         isValidPersonName(personName);
-        personIsExist(personName);
-        allPersons.add(personName);
+        personDAO.insert(personName);
     }
 
     public void addSpend(int newSpend) throws NonValidArgumentException {
         isValidSpend(newSpend);
-        allSpends += newSpend;
+        personDAO.addSpend(newSpend);
     }
 
     public Set<String> getAllPerson() {
-        return new HashSet<>(allPersons);
+        return personDAO.getAllPersonNames();
+    }
+
+    public int getPersonCount() {
+        return personDAO.getPersonCount();
     }
 
     public int getAllSpends() {
-        return allSpends;
+        return personDAO.getSpends();
     }
 
     public BigDecimal divideAmongEveryone() {
-        if (allPersons.isEmpty()) {
+        int personCount = personDAO.getPersonCount();
+        if (personCount == 0) {
             return new BigDecimal(0);
         }
 
-        BigDecimal allExpenses = new BigDecimal(allSpends);
-        BigDecimal personCount = new BigDecimal(allPersons.size());
-        return allExpenses.divide(personCount, RoundingMode.CEILING);
+        BigDecimal allExpenses = new BigDecimal(personDAO.getSpends());
+        BigDecimal persons = new BigDecimal(personCount);
+        return allExpenses.divide(persons, RoundingMode.CEILING);
     }
 
-    private void isValidSpend(int newSpend) throws NonValidArgumentException  {
+    private void isValidSpend(int newSpend) throws NonValidArgumentException {
         if (newSpend < 0) {
             throw new NonValidArgumentException("Spending can't be negative");
         }
@@ -57,12 +65,6 @@ public class PersonService {
         }
         if (personName.contains(" ")) {
             throw new NonValidArgumentException("The person name can only consist of one word");
-        }
-    }
-
-    private void personIsExist(String personName) throws DuplicateResourceException {
-        if (allPersons.contains(personName)) {
-            throw new DuplicateResourceException("Person + {" + personName + "} already exist");
         }
     }
 }

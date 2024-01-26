@@ -1,5 +1,6 @@
 package ru.daniil.split;
 
+import ru.daniil.split.dao.InMemoryPersonDAO;
 import ru.daniil.split.service.PersonService;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
@@ -12,7 +13,7 @@ import java.util.Set;
 public final class SawApp {
 
     private final Scanner input = new Scanner(System.in);
-    private final PersonService personService = new PersonService();
+    private final PersonService personService = new PersonService(new InMemoryPersonDAO());
 
     public static void main(String[] args) {
         SawApp app = new SawApp();
@@ -20,20 +21,26 @@ public final class SawApp {
     }
 
     public void runApp() {
+        final String ADD_NEW_PERSON = "1";
+        final String ADD_NEW_SPEND = "2";
+        final String SHOW_ALL_PERSON = "3";
+        final String SHOW_ALL_SPENDS = "4";
+        final String DISPLAY_EACH_PERSONS_SHARE = "5";
+        final String EXIT = "6";
 
         while (true) {
-            String answer;
+            String userAnswer;
 
             showAppMenu();
 
-            answer = getNextString();
-            switch (answer) {
-                case "1" -> addNewPerson();
-                case "2" -> addNewSpend();
-                case "3" -> showAllPersons();
-                case "4" -> showAllSpends();
-                case "5" -> displayEachPersonsShare();
-                case "6" -> exit();
+            userAnswer = getNextString();
+            switch (userAnswer) {
+                case ADD_NEW_PERSON -> addNewPerson();
+                case ADD_NEW_SPEND -> addNewSpend();
+                case SHOW_ALL_PERSON -> showAllPersons();
+                case SHOW_ALL_SPENDS -> showAllSpends();
+                case DISPLAY_EACH_PERSONS_SHARE -> displayEachPersonsShare();
+                case EXIT -> exit();
                 default -> System.out.println("You made a mistake when entering data");
             }
         }
@@ -55,10 +62,9 @@ public final class SawApp {
         try {
             personService.addNewPerson(personName);
         } catch (DuplicateResourceException e) {
-            System.out.println("A person " + personName + " is exist.");
+            System.out.println("This person is already registered");
         } catch (NonValidArgumentException e) {
-            System.out.println("The username entered is incorrect. \n" +
-                    "    * " + e.getMessage());
+            System.out.println("The username entered is incorrect. \n" + "    * " + e.getMessage());
         }
     }
 
@@ -79,7 +85,7 @@ public final class SawApp {
         }
     }
 
-    public void showAllPersons() {
+    public void  showAllPersons() {
         Set<String> allPersons = personService.getAllPerson();
 
         if (allPersons.isEmpty()) {
@@ -88,10 +94,7 @@ public final class SawApp {
         }
 
         System.out.println("All registered persons:");
-        for (String personName : allPersons) {
-            System.out.println("* " + personName);
-        }
-
+        allPersons.forEach(s -> System.out.println("* " + s));
     }
 
     public void showAllSpends() {
@@ -110,7 +113,7 @@ public final class SawApp {
             System.out.println("No expenses");
             return;
         }
-        int quantityPerson = personService.getAllPerson().size();
+        int quantityPerson = personService.getPersonCount();
         if (quantityPerson == 0) {
             System.out.println("No users need to pay for the account");
             return;

@@ -3,7 +3,9 @@ package ru.daniil.split.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.daniil.split.dao.InMemoryPersonDAO;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 
@@ -21,7 +23,7 @@ class PersonServiceTest {
 
     @BeforeEach
     void setUp() {
-        personService = new PersonService();
+        personService = new PersonService(new InMemoryPersonDAO());
     }
 
     @Test
@@ -73,14 +75,14 @@ class PersonServiceTest {
         assertEquals(expectedResult, result);
     }
 
-    static Stream<Object[]> displayEachPersonsShare() {
+    static Stream<Arguments> displayEachPersonsShare() {
         return Stream.of(
-                new Object[]{new BigDecimal(0), 0, List.of()},
-                new Object[]{new BigDecimal(0), 0, List.of("Daniil", "Nikita", "Oleg")},
-                new Object[]{new BigDecimal(67), 200, List.of("Daniil", "Nikita", "Oleg")},
-                new Object[]{new BigDecimal(50), 200, List.of("Daniil", "Nikita", "Oleg", "Maxim")},
-                new Object[]{new BigDecimal(0), 789, List.of()},
-                new Object[]{new BigDecimal(198), 789, List.of("Daniil", "Nikita", "Oleg", "Maxim")}
+                Arguments.of(new BigDecimal(0), 0, List.of()),
+                Arguments.of(new BigDecimal(0), 0, List.of("Daniil", "Nikita", "Oleg")),
+                Arguments.of(new BigDecimal(67), 200, List.of("Daniil", "Nikita", "Oleg")),
+                Arguments.of(new BigDecimal(50), 200, List.of("Daniil", "Nikita", "Oleg", "Maxim")),
+                Arguments.of(new BigDecimal(0), 789, List.of()),
+                Arguments.of(new BigDecimal(198), 789, List.of("Daniil", "Nikita", "Oleg", "Maxim"))
         );
     }
 }
