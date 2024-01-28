@@ -2,17 +2,20 @@ package ru.daniil.split.dao;
 
 import ru.daniil.split.exceptions.DuplicateResourceException;
 
+import java.io.IOException;
 import java.util.Set;
 
 public interface PersonDAO {
 
-    void insert(String personName) throws DuplicateResourceException;
+    void insert(String personName) throws DuplicateResourceException, IOException;
 
-    Set<String> getAllPersonNames();
+    Set<String> getAllPersonNames() throws IOException;
 
-    int getPersonCount();
+    int getPersonCount() throws IOException;
 
-    void addSpend(int newSpend);
+    void addSpend(int newSpend) throws IOException;
 
-    int getSpends();
+    int getSpends() throws IOException;
+
+    void reset() throws IOException;
 }

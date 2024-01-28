@@ -4,6 +4,7 @@ import ru.daniil.split.dao.PersonDAO;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -18,29 +19,29 @@ public class PersonService {
         this.personDAO = personDAO;
     }
 
-    public void addNewPerson(String personName) throws NonValidArgumentException, DuplicateResourceException {
+    public void addNewPerson(String personName) throws NonValidArgumentException, DuplicateResourceException, IOException {
         isValidPersonName(personName);
         personDAO.insert(personName);
     }
 
-    public void addSpend(int newSpend) throws NonValidArgumentException {
+    public void addSpend(int newSpend) throws NonValidArgumentException, IOException {
         isValidSpend(newSpend);
         personDAO.addSpend(newSpend);
     }
 
-    public Set<String> getAllPerson() {
+    public Set<String> getAllPerson() throws IOException {
         return personDAO.getAllPersonNames();
     }
 
-    public int getPersonCount() {
+    public int getPersonCount() throws IOException {
         return personDAO.getPersonCount();
     }
 
-    public int getAllSpends() {
+    public int getAllSpends() throws IOException {
         return personDAO.getSpends();
     }
 
-    public BigDecimal divideAmongEveryone() {
+    public BigDecimal divideAmongEveryone() throws IOException {
         int personCount = personDAO.getPersonCount();
         if (personCount == 0) {
             return new BigDecimal(0);
@@ -49,6 +50,10 @@ public class PersonService {
         BigDecimal allExpenses = new BigDecimal(personDAO.getSpends());
         BigDecimal persons = new BigDecimal(personCount);
         return allExpenses.divide(persons, RoundingMode.CEILING);
+    }
+
+    public void reset() throws IOException {
+        personDAO.reset();
     }
 
     private void isValidSpend(int newSpend) throws NonValidArgumentException {
