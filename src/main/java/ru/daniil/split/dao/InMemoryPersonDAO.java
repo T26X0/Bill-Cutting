@@ -39,4 +39,10 @@ public class InMemoryPersonDAO implements PersonDAO {
     public int getSpends() {
         return allSpends.intValue();
     }
+
+    @Override
+    public void reset() {
+        allSpends = BigDecimal.ZERO;
+        allPerson = new HashSet<>();
+    }
 }

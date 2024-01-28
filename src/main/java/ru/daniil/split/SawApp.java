@@ -1,10 +1,11 @@
 package ru.daniil.split;
 
-import ru.daniil.split.dao.InMemoryPersonDAO;
+import ru.daniil.split.dao.JsonPersonDAO;
 import ru.daniil.split.service.PersonService;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.Set;
 public final class SawApp {
 
     private final Scanner input = new Scanner(System.in);
-    private final PersonService personService = new PersonService(new InMemoryPersonDAO());
+    private final PersonService personService = new PersonService(new JsonPersonDAO());
 
     public static void main(String[] args) {
         SawApp app = new SawApp();
@@ -26,7 +27,8 @@ public final class SawApp {
         final String SHOW_ALL_PERSON = "3";
         final String SHOW_ALL_SPENDS = "4";
         final String DISPLAY_EACH_PERSONS_SHARE = "5";
-        final String EXIT = "6";
+        final String EXIT = "7";
+        final String RESET = "6";
 
         while (true) {
             String userAnswer;
@@ -40,8 +42,9 @@ public final class SawApp {
                 case SHOW_ALL_PERSON -> showAllPersons();
                 case SHOW_ALL_SPENDS -> showAllSpends();
                 case DISPLAY_EACH_PERSONS_SHARE -> displayEachPersonsShare();
+                case RESET -> reset();
                 case EXIT -> exit();
-                default -> System.out.println("You made a mistake when entering data");
+                default -> showError("You made a mistake when entering data");
             }
         }
     }
@@ -53,7 +56,8 @@ public final class SawApp {
         System.out.println("  1. Add new person        |      3. Show all persons");
         System.out.println("  2. Add new spend         |      4. Show all spends");
         System.out.println("              5. What everyone has to pay");
-        System.out.println("                        6. Exit");
+        System.out.println("                        6. Reset");
+        System.out.println("                        7. Exit");
     }
 
     public void addNewPerson() {
@@ -62,9 +66,11 @@ public final class SawApp {
         try {
             personService.addNewPerson(personName);
         } catch (DuplicateResourceException e) {
-            System.out.println("This person is already registered");
+            showError("This person is already registered");
         } catch (NonValidArgumentException e) {
-            System.out.println("The username entered is incorrect. \n" + "    * " + e.getMessage());
+            showError("The username entered is incorrect. \n" + "    * " + e.getMessage());
+        } catch (IOException e) {
+            showError("An error occurred while entering data, please try later");
         }
     }
 
@@ -75,21 +81,29 @@ public final class SawApp {
         try {
             newSpend = getNextInteger();
         } catch (NumberFormatException e) {
-            System.out.println("spends can only be an integer");
+            showError("spends can only be an integer");
             return;
         }
         try {
             personService.addSpend(newSpend);
         } catch (NonValidArgumentException e) {
-            System.out.println("Negative cannot be negative");
+            showError("Negative cannot be negative");
+        } catch (IOException e) {
+            showError("An error occurred while entering data, please try later");
         }
     }
 
-    public void  showAllPersons() {
-        Set<String> allPersons = personService.getAllPerson();
+    public void showAllPersons() {
+        Set<String> allPersons;
+        try {
+            allPersons = personService.getAllPerson();
+        } catch (IOException e) {
+            showError("An error occurred while reading data, please try later");
+            return;
+        }
 
         if (allPersons.isEmpty()) {
-            System.out.println("No registered persons");
+            showError("No registered persons");
             return;
         }
 
@@ -98,31 +112,65 @@ public final class SawApp {
     }
 
     public void showAllSpends() {
-        int allSpends = personService.getAllSpends();
+        int allSpends;
+        try {
+            allSpends = personService.getAllSpends();
+        } catch (IOException e) {
+            showError("An error occurred while reading data, please try later");
+            return;
+        }
 
         if (allSpends == 0) {
-            System.out.println("No expenses");
+            showError("No expenses");
             return;
         }
         System.out.println("Total was spends: " + allSpends);
     }
 
     public void displayEachPersonsShare() {
-        BigDecimal result = personService.divideAmongEveryone();
-        if (result.equals(new BigDecimal(0))) {
-            System.out.println("No expenses");
+        int quantityPerson;
+        try {
+            quantityPerson = personService.getPersonCount();
+        } catch (IOException e) {
+            showError("An error occurred while reading data, please try later");
             return;
         }
-        int quantityPerson = personService.getPersonCount();
+
         if (quantityPerson == 0) {
             System.out.println("No users need to pay for the account");
             return;
         }
-        System.out.println("Each person's share: " + personService.divideAmongEveryone());
+
+        BigDecimal result;
+        try {
+            result = personService.divideAmongEveryone();
+        } catch (IOException e) {
+            showError("An error occurred while reading data, please try later");
+            return;
+        }
+
+        if (result.equals(new BigDecimal(0))) {
+            System.out.println("No expenses");
+            return;
+        }
+
+        System.out.println("Each person's share: " + result);
     }
 
     public void exit() {
         System.exit(0);
+    }
+
+    public void reset() {
+        try {
+            personService.reset();
+        } catch (IOException e) {
+            showError("An error occurred while reading data, please try later");
+        }
+    }
+
+    private void showError(String string) {
+        System.out.println(string);
     }
 
     private String getNextString() {
@@ -131,6 +179,5 @@ public final class SawApp {
 
     private int getNextInteger() {
         return Integer.parseInt(input.nextLine().trim());
-
     }
 }

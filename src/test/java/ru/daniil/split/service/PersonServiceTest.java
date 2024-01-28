@@ -9,6 +9,7 @@ import ru.daniil.split.dao.InMemoryPersonDAO;
 import ru.daniil.split.exceptions.DuplicateResourceException;
 import ru.daniil.split.exceptions.NonValidArgumentException;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
@@ -27,7 +28,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void addNewValidPerson() throws NonValidArgumentException, DuplicateResourceException {
+    void addNewValidPerson() throws NonValidArgumentException, DuplicateResourceException, IOException {
         personService.addNewPerson("Lerya");
         assertNotEquals(false, personService.getAllPerson().contains("Lerya"));
     }
@@ -42,7 +43,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void addExistPerson() throws NonValidArgumentException, DuplicateResourceException {
+    void addExistPerson() throws NonValidArgumentException, DuplicateResourceException, IOException {
         personService.addNewPerson("Nikita");
         assertThrows(DuplicateResourceException.class, () -> {
             personService.addNewPerson("Nikita");
@@ -50,7 +51,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void addNewValidSpends() throws NonValidArgumentException {
+    void addNewValidSpends() throws NonValidArgumentException, IOException {
         personService.addSpend(NEW_VALID_SPEND);
         assertEquals(NEW_VALID_SPEND, personService.getAllSpends());
     }
@@ -64,7 +65,7 @@ class PersonServiceTest {
 
     @MethodSource
     @ParameterizedTest
-    void displayEachPersonsShare(BigDecimal expectedResult, int money, List<String> names) throws NonValidArgumentException, DuplicateResourceException {
+    void displayEachPersonsShare(BigDecimal expectedResult, int money, List<String> names) throws NonValidArgumentException, DuplicateResourceException, IOException {
         personService.addSpend(money);
         for (String personName : names) {
             personService.addNewPerson(personName);
